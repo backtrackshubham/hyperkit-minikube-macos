@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -eu
+
+help()
+{
+    echo "Set docker env variables if minikube is running"
+}
+
+while getopts ":h" option; do
+    case $option in
+        h)
+            help
+            exit;;
+    esac
+done
+
+handle_minikube_not_running()
+{
+    echo "🤷  The control plane node must be running for this command"
+    echo "👉  To start a docker vm, run: \"docker_vm_start\""
+    exit 1
+}
+
+minikube -p minikube docker-env > /dev/null 2>&1 || handle_minikube_not_running
+eval $(minikube -p minikube docker-env)
+
+exit 0

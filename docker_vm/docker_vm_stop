@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -eu
+
+help()
+{
+    echo "Stop vpnkit and minikube"
+}
+
+while getopts ":h" option; do
+    case $option in
+        h)
+            help
+            exit;;
+    esac
+done
+
+echo "⚙️   Stopping vpnkit..."
+for pid in $(ps -ax | grep "[/]vpnkit" | cut -d " " -f 1); do kill -9 $pid; done
+kill -9 $(ps aux | awk '/minikube mount/&&!/awk/ {print $2}')
+echo "⚙️   Stopping minikube..."
+minikube stop
+echo "🖖  Done."
+
+exit 0
